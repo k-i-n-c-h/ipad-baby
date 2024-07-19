@@ -1,0 +1,1 @@
+window.server = "localhost";

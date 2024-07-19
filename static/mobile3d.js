@@ -14,7 +14,7 @@ const ringRadius = 5;
 const maxMarkerLifetime = 12; // Maximum lifetime of markers in seconds
 
 function connectWebSocket() {
-    ws = new WebSocket("ws://127.0.0.1:8765");
+    ws = new WebSocket(`ws://${window.server}:8765`);
 
     ws.onopen = function () {
         console.log("WebSocket connected");

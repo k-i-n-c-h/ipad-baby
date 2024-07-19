@@ -1,3 +1,5 @@
 run `server.py` on a system with sound out
 
 use html in static to view and mess with sound
+
+Edit server location in static/server.js

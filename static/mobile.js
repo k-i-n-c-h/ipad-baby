@@ -2,7 +2,7 @@ let ws;
 let activeTouchId = null;  // Track the active touch ID
 
 function connectWebSocket() {
-    ws = new WebSocket("ws://10.42.0.1:8765");  // Adjust IP address as needed
+    ws = new WebSocket(`ws://${window.server}:8765`);  // Adjust IP address as needed
 
     ws.onopen = function() {
         console.log("WebSocket connected");
