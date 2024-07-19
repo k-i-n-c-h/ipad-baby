@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Client</title>
+    <style>
+        /* CSS to disable text selection and prevent scrolling */
+        body {
+            overflow: hidden; /* Prevent scrolling */
+            -webkit-touch-callout: none; /* Disable touch callouts (long press) */
+            -webkit-user-select: none; /* Disable text selection for webkit browsers */
+            -khtml-user-select: none; /* Disable text selection for Konqueror */
+            -moz-user-select: none; /* Disable text selection for Firefox */
+            -ms-user-select: none; /* Disable text selection for Internet Explorer/Edge */
+            user-select: none; /* Disable text selection for general browsers */
+            margin: 0; /* Remove default body margin */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: black;
+        }
+
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f0f0f0;
+            touch-action: none; /* Disable touch events */
+        }
+
+        .debug-info {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .color-box {
+            width: 40px;
+            height: 40px;
+            background-color: black; /* Initial color */
+            border: 1px solid darkgray;
+            border-radius: 50%;
+            font-size: 8pt;
+            transition: background-color 0.5s ease; /* Smooth transition */
+        }
+        /* Optional: CSS for sound markers */
+        .sound-marker {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 3px solid white;
+            background-color: red; /* Default color */
+                        transform: translate(-50%, -50%);
+        }
+#soundMarkers {
+    position: absolute; /* Ensure relative positioning for absolute children */
+    width: 100%; /* Adjust width as needed */
+    height: 100%; /* Adjust height as needed */
+    overflow: hidden; /* Ensure markers don't overflow */
+    /* Additional styling as needed */
+}
+        #videoElement {
+            width: 100%;
+            height: auto;
+        }
+</style>
+<body>
+    <div id="soundMarkers"></div>
+    <div class="color-box" id="colorBox"></div>
+    <script src="mobile.js"></script>
+</body>
+</html>

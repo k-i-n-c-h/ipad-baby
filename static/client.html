@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Audio API Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        #sounds {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Web Audio API Client</h1>
+    <div id="sounds"></div>
+
+    <script>
+        const websocketUrl = 'ws://192.168.1.19:8765';  // Replace with your WebSocket server URL
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const soundsElement = document.getElementById('sounds');
+
+        let websocket;
+
+        function connect() {
+            websocket = new WebSocket(websocketUrl);
+            websocket.onopen = () => {
+                console.log('WebSocket connected');
+                pollServer();
+            };
+
+            websocket.onmessage = async (event) => {
+                const message = JSON.parse(event.data);
+                if (message.type === 'active_sounds') {
+                    await handleActiveSounds(message.data);
+                }
+            };
+
+            websocket.onclose = () => {
+                console.log('WebSocket connection closed');
+                setTimeout(connect, 1000); // Reconnect after 1 second
+            };
+
+            websocket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                websocket.close();
+            };
+        }
+
+        async function pollServer() {
+            try {
+                await send({ type: 'get_all_playing_sounds' });
+                setTimeout(pollServer, 100); // Poll every 100ms
+            } catch (error) {
+                console.error('Error polling server:', error);
+                setTimeout(pollServer, 1000); // Retry after 1 second
+            }
+        }
+
+        async function send(message) {
+            if (websocket.readyState === WebSocket.OPEN) {
+                websocket.send(JSON.stringify(message));
+            }
+        }
+
+        async function handleActiveSounds(activeSounds) {
+            soundsElement.innerHTML = ''; // Clear previous sounds
+
+            activeSounds.forEach(async (soundData) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain(); // Create a gain node for volume control
+                oscillator.type = 'sine'; // Set oscillator type (sine, square, sawtooth, triangle)
+                oscillator.frequency.setValueAtTime(soundData.frequency, audioContext.currentTime); // Set frequency
+                oscillator.connect(gainNode); // Connect oscillator to gain node
+                gainNode.connect(audioContext.destination); // Connect gain node to audio context destination
+                
+                // Ramp up the gain to avoid clicks
+                const fadeDuration = 0.05; // Fade duration in seconds
+                const currentTime = audioContext.currentTime;
+                gainNode.gain.setValueAtTime(0, currentTime);
+                gainNode.gain.linearRampToValueAtTime(1, currentTime + fadeDuration);
+
+                oscillator.start(); // Start oscillator
+
+                const soundElement = document.createElement('div');
+                soundElement.textContent = `Client ID: ${soundData.client_id}, Frequency: ${soundData.frequency}, LFO Frequency: ${soundData.lfo_frequency}`;
+                soundsElement.appendChild(soundElement);
+
+                // Stop sound function with linear ramp down to avoid clicks
+                async function stopSound() {
+                    gainNode.gain.setValueAtTime(1, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + fadeDuration);
+                    oscillator.stop(audioContext.currentTime + fadeDuration);
+                    setTimeout(() => oscillator.disconnect(), (fadeDuration + 0.1) * 1000); // Disconnect after fade out
+                }
+
+                // Example: Stop sound after 3 seconds
+                setTimeout(stopSound, 3000); // Adjust this as needed for your application
+            });
+        }
+
+        connect();
+    </script>
+</body>
+</html>

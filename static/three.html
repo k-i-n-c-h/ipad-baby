@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Client</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        .debug-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug-info" id="debugInfo">Debug Info</div>
+   <script src="three.js-r149/build/three.min.js"></script>
+<script type="module" src="mobile3d.js"></script>
+</body>
+</html>
