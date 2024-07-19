@@ -8,7 +8,7 @@ import numpy as np
 from time import time
 
 # Initialize Pygame mixer
-pygame.mixer.pre_init(44100, -16, 2, 64)  # Initialize mixer settings before pygame.init()
+pygame.mixer.pre_init(44100, -16, 2, 2048, allowedchanges=pygame.AUDIO_ALLOW_ANY_CHANGE)  # Initialize mixer settings before pygame.init()
 pygame.init()
 pygame.mixer.init()
 
